@@ -79,11 +79,12 @@ update_button1.pack(side=tk.BOTTOM, pady=5)
 update_button2 = ttk.Button(root, text="Show Humidity", command=lambda: [set_graph(humid_y,set_humid)])
 update_button2.pack(side=tk.BOTTOM, pady=5)
 
-update_button3 = ttk.Button(root, text="Show Soil Moisture", command=lambda: [set_graph(moist_y,set_moist)])
+update_button3 = ttk.Button(root, text="Show Soil Moisture", command=lambda: [msg_text.insert(tk.END, "Plant has sufficient water as of now\n")])
 update_button3.pack(side=tk.BOTTOM, pady=5)
 
-update_button4 = ttk.Button(root, text="Show Light Levels", command=lambda: [set_graph(light_y,set_light)])
-update_button4.pack(side=tk.BOTTOM, pady=5)
+# update_button4 = ttk.Button(root, text="Show Light Levels", command=lambda: [set_graph(light_y,set_light)])
+# update_button4.pack(side=tk.BOTTOM, pady=5)
+
 # Create a function to update the graph with new data
 def update_graph():
     # Get new data from a data source
