@@ -114,11 +114,11 @@ root.mainloop()
 
 ##### THIS IS THE TEMP/HUMIDITY SENSOR AND LIGHTS #####
 
+import RPi.GPIO as GPIO
 import time
 from time import sleep
 import adafruit_dht
 import board
-import RPi.GPIO as GPIO
 
 RED_PIN=25
 BLUE_PIN=26
@@ -128,24 +128,45 @@ GPIO.setup(GREEN_PIN,GPIO.OUT)
 GPIO.setup(RED_PIN,GPIO.OUT)
 GPIO.setup(BLUE_PIN,GPIO.OUT)
 dht = adafruit_dht.DHT22(board.D4)
-
 try:
     while True:
-        temperature = dht.temperature
-        humidity = dht.humidity
-        if(temperature<21):
-            print("turn up the heat!")
-            GPIO.output(GREEN_PIN, GPIO.HIGH)
-            GPIO.output(RED_PIN, GPIO.HIGH)
-            GPIO.output(BLUE_PIN, GPIO.HIGH)
-        else:
-            GPIO.output(GREEN_PIN, GPIO.LOW)
-            GPIO.output(RED_PIN, GPIO.LOW)
-            GPIO.output(BLUE_PIN, GPIO.LOW)
+        try:
+            temperature = dht.temperature
+            humidity = dht.humidity
+            #Print what we got to the REPL
             print("Temp: {:.1f} *C \t Humidity: {}%".format(temperature, humidity))
-         
+            if(temperature<21 and humidity>55):
+                print("it is too cold and too humid...turning up heat... open the window!")
+                GPIO.output(GREEN_PIN, GPIO.HIGH)
+                GPIO.output(RED_PIN, GPIO.HIGH)
+                GPIO.output(BLUE_PIN, GPIO.HIGH)
+                sleep(3)
+            elif(temperature>21 and humidity>55):
+                print("temperature is good, but its too humid...open the window!")
+                GPIO.output(GREEN_PIN, GPIO.HIGH)
+                GPIO.output(RED_PIN, GPIO.HIGH)
+                GPIO.output(BLUE_PIN, GPIO.HIGH)
+                sleep(3)
+            elif(temperature<21 and humidity<55):
+                print("humidity levels within range, but temperature low...turning up heat!")
+                GPIO.output(GREEN_PIN, GPIO.HIGH)
+                GPIO.output(RED_PIN, GPIO.HIGH)
+                GPIO.output(BLUE_PIN, GPIO.HIGH)
+                sleep(3)
+            else:
+                print("temerature and humidity levels within range...grow plants grow!")
+                GPIO.output(GREEN_PIN, GPIO.HIGH)
+                GPIO.output(RED_PIN, GPIO.HIGH)
+                GPIO.output(BLUE_PIN, GPIO.HIGH)
+                sleep(3)
+        except RuntimeError as e:
+        #Reading doesn't always work! Just print error and we'll try again
+            print("Reading from DHT failure: ", e.args)
+
+        time.sleep(1)
+
 except KeyboardInterrupt:
     print("all done")
     GPIO.cleanup()
-    
-##################################
+
+
