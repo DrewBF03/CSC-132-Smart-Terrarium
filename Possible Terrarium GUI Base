@@ -31,7 +31,7 @@ ax = fig.add_subplot(111)
 # Create a canvas to display the graph
 canvas = FigureCanvasTkAgg(fig, master=graph_frame)
 # canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-canvas.get_tk_widget().grid(column=0, row=0)
+canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 # Create a frame for the message board
 msg_frame = ttk.Frame(root)
 msg_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
@@ -42,7 +42,7 @@ msg_label.pack(side=tk.TOP, padx=10, pady=10)
 
 # Create a text box to display messages
 msg_text = tk.Text(msg_frame, height=20, width=30)
-msg_text.pack(side=tk.TOP, padx=10, pady=10)
+msg_text.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
 # Create a button to update the graph
 def humid_graph():
@@ -62,13 +62,13 @@ def humid_graph():
     ax.clear()
     
     # Update the graph with the new data
-    ax.plot(x_data, set_humid, label='bruh')
-    ax.plot(x_data, humid_y, label='meme')
+    ax.plot(x_data, set_humid, label='Min Humidity', color='green')
+    ax.plot(x_data, humid_y, label='Humidity Levels', color='blue')
     ax.set_xlabel("Time", fontsize=14)
     ax.set_ylabel("Data", fontsize=14)
     ax.set_title("Graph", fontsize=16)
     # ax.set_xlim(0, 100)
-    # ax.set_ylim(0, 100)
+    ax.set_ylim(50, 60)
     ax.legend()
     canvas.draw()
     # Update the message board with a new message
@@ -80,13 +80,13 @@ def temp_graph():
     check=1
     ax.clear()
     # Update the graph with the new data
-    ax.plot(x_data, set_temp, label='bruh')
-    ax.plot(x_data, temp_y, label='meme')
+    ax.plot(x_data, set_temp, label='Min Temp', color='green')
+    ax.plot(x_data, temp_y, label=' Current Temp', color='red')
     ax.set_xlabel("Time", fontsize=14)
     ax.set_ylabel("Data", fontsize=14)
     ax.set_title("Graph", fontsize=16)
     # ax.set_xlim(0, 100)
-    # ax.set_ylim(0, 100)
+    ax.set_ylim(18, 24)
     ax.legend()
     canvas.draw()
     # Update the message board with a new message
@@ -114,19 +114,21 @@ def update_graph():
     
     # Update the graph with the new data
     if check:
-        ax.plot(x_data, set_humid, label='bruh')
-        ax.plot(x_data, humid_y, label='meme')
+        ax.plot(x_data, set_humid, label='Min Humidity', color='green')
+        ax.plot(x_data, humid_y, label='Humidity Levels', color='blue')
         ax.set_xlabel("Time", fontsize=14)
         ax.set_ylabel("Data", fontsize=14)
         ax.set_title("Graph", fontsize=16)
+        ax.set_ylim(50, 60)
         ax.legend()
         canvas.draw()
     else:
-        ax.plot(x_data, set_temp, label='bruh')
-        ax.plot(x_data, temp_y, label='meme')
+        ax.plot(x_data, set_temp, label='Min Temp', color='green')
+        ax.plot(x_data, temp_y, label=' Current Temp', color='red')
         ax.set_xlabel("Time", fontsize=14)
         ax.set_ylabel("Data", fontsize=14)
         ax.set_title("Graph", fontsize=16)
+        ax.set_ylim(18, 24)
         ax.legend()
         canvas.draw()
 
