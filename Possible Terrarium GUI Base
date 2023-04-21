@@ -2,17 +2,17 @@ import tkinter as tk
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
-# check = 0
+check = 0
 
 x_data = [1, 2, 3, 4, 5]
-humid_y = [2, 3, 3, 4, 8]
-set_humid = [5, 5, 5, 5, 5]
-light_y = [3, 5, 6, 2, 6]
-set_light = [4, 4, 4, 4, 4]
-temp_y = [8, 6, 7, 6, 3]
-set_temp = [6, 6, 6, 6, 6]
-moist_y = [5, 4, 5, 8, 1]
-set_moist = [7, 7, 7, 7, 7]
+humid_y = [0, 0, 0, 0, 0]
+set_humid = [55, 55, 55, 55, 55]
+# light_y = [3, 5, 6, 2, 6]
+# set_light = [4, 4, 4, 4, 4]
+temp_y = [0, 0, 0, 0, 0]
+set_temp = [21, 21, 21, 21, 21]
+# moist_y = [5, 4, 5, 8, 1]
+# set_moist = [7, 7, 7, 7, 7]
 y_data1 = [2, 4, 6, 8, 10]
 y_data2 = [1, 3, 5, 7, 9]
 
@@ -27,15 +27,11 @@ graph_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 # Create a figure and axis for the graph
 fig = Figure(figsize=(5, 4), dpi=100)
 ax = fig.add_subplot(111)
-ax.set_xlabel("X-axis")
-ax.set_ylabel("Y-axis")
-ax.set_xlim(0, 10)
-ax.set_ylim(0, 10)
 
 # Create a canvas to display the graph
 canvas = FigureCanvasTkAgg(fig, master=graph_frame)
-canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-
+# canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+canvas.get_tk_widget().grid(column=0, row=0)
 # Create a frame for the message board
 msg_frame = ttk.Frame(root)
 msg_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
@@ -49,8 +45,8 @@ msg_text = tk.Text(msg_frame, height=20, width=30)
 msg_text.pack(side=tk.TOP, padx=10, pady=10)
 
 # Create a button to update the graph
-def set_graph(y, set_y):
-    global y_data1, y_data2
+def humid_graph():
+    global check
     # Update the data for the second line on the graph
     # if check:
     #     check=0
@@ -60,23 +56,47 @@ def set_graph(y, set_y):
     #     check=1
     #     x_data2 = [1, 2, 3, 4, 5]
     #     y_data2 = [0, 2, 4, 6, 8]
-    y_data1 = set_y
-    y_data2 = y
-
+    # y_data1 = set_y
+    # y_data2 = y
+    check=0
     ax.clear()
     
     # Update the graph with the new data
-    ax.plot(x_data, y_data1)
-    ax.plot(x_data, y_data2)
+    ax.plot(x_data, set_humid, label='bruh')
+    ax.plot(x_data, humid_y, label='meme')
+    ax.set_xlabel("Time", fontsize=14)
+    ax.set_ylabel("Data", fontsize=14)
+    ax.set_title("Graph", fontsize=16)
+    # ax.set_xlim(0, 100)
+    # ax.set_ylim(0, 100)
+    ax.legend()
+    canvas.draw()
+    # Update the message board with a new message
+    msg_text.insert(tk.END, "Graph updated\n")
+
+def temp_graph():
+    global check
+
+    check=1
+    ax.clear()
+    # Update the graph with the new data
+    ax.plot(x_data, set_temp, label='bruh')
+    ax.plot(x_data, temp_y, label='meme')
+    ax.set_xlabel("Time", fontsize=14)
+    ax.set_ylabel("Data", fontsize=14)
+    ax.set_title("Graph", fontsize=16)
+    # ax.set_xlim(0, 100)
+    # ax.set_ylim(0, 100)
+    ax.legend()
     canvas.draw()
     # Update the message board with a new message
     msg_text.insert(tk.END, "Graph updated\n")
 
 # Create a button to update the data and redraw the graph
-update_button1 = ttk.Button(root, text="Show Temperature", command=lambda: [set_graph(temp_y,set_temp)])
+update_button1 = ttk.Button(root, text="Show Temperature", command=lambda: [temp_graph()])
 update_button1.pack(side=tk.BOTTOM, pady=5)
 
-update_button2 = ttk.Button(root, text="Show Humidity", command=lambda: [set_graph(humid_y,set_humid)])
+update_button2 = ttk.Button(root, text="Show Humidity", command=lambda: [humid_graph()])
 update_button2.pack(side=tk.BOTTOM, pady=5)
 
 update_button3 = ttk.Button(root, text="Show Soil Moisture", command=lambda: [msg_text.insert(tk.END, "Plant has sufficient water as of now\n")])
@@ -93,21 +113,34 @@ def update_graph():
     ax.clear()
     
     # Update the graph with the new data
-    ax.plot(x_data, y_data1)
-    ax.plot(x_data, y_data2)
-    canvas.draw()
+    if check:
+        ax.plot(x_data, set_humid, label='bruh')
+        ax.plot(x_data, humid_y, label='meme')
+        ax.set_xlabel("Time", fontsize=14)
+        ax.set_ylabel("Data", fontsize=14)
+        ax.set_title("Graph", fontsize=16)
+        ax.legend()
+        canvas.draw()
+    else:
+        ax.plot(x_data, set_temp, label='bruh')
+        ax.plot(x_data, temp_y, label='meme')
+        ax.set_xlabel("Time", fontsize=14)
+        ax.set_ylabel("Data", fontsize=14)
+        ax.set_title("Graph", fontsize=16)
+        ax.legend()
+        canvas.draw()
 
     # Update the message board with a new message
     msg_text.insert(tk.END, "Plant needs no care as of now\n")
 
     # Call this function again after 1 second
-    root.after(10000, update_graph)
+    # root.after(10000, update_graph)
 
 # Start updating the graph
 update_graph()
 
 # Start the main loop
-root.mainloop()
+# root.mainloop()
 
 ################################################################################
 ################################################################################
@@ -132,7 +165,14 @@ try:
     while True:
         try:
             temperature = dht.temperature
+            temp_y.pop(0)
+            temp_y.append(temperature)
             humidity = dht.humidity
+            humid_y.pop(0)
+            humid_y.append(humidity)
+            update_graph()
+            root.update_idletasks()
+            root.update()
             #Print what we got to the REPL
             print("Temp: {:.1f} *C \t Humidity: {}%".format(temperature, humidity))
             if(temperature<21 and humidity>55):
@@ -167,9 +207,4 @@ try:
 
 except KeyboardInterrupt:
     print("all done")
-    GPIO.output(GREEN_PIN, GPIO.LOW)
-    GPIO.output(RED_PIN, GPIO.LOW)
-    GPIO.output(BLUE_PIN, GPIO.LOW)
     GPIO.cleanup()
-
-
