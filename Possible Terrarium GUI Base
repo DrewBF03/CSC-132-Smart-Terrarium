@@ -206,6 +206,8 @@ update_graph()
 
 ##### THIS IS THE TEMP/HUMIDITY SENSOR AND LIGHTS #####
 
+from classes import Hardware
+from classes import TimeKeeper as TK
 import RPi.GPIO as GPIO
 import time
 from time import sleep
