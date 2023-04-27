@@ -132,7 +132,12 @@ def toggle_lights():
         GPIO.output(BLUE_PIN, GPIO.HIGH)
 
 def toggle_pump():
-    pass
+    if pump:
+        pump=0
+        RELAY.off()
+    else:
+        pump=1
+        RELAY.on()
 
 # Create a button to update the data and redraw the graph
 update_button1 = ttk.Button(root, text="Show Temperature", command=lambda: [temp_graph()])
@@ -141,7 +146,7 @@ update_button1.pack(side=tk.BOTTOM, pady=5)
 update_button2 = ttk.Button(root, text="Show Humidity", command=lambda: [humid_graph()])
 update_button2.pack(side=tk.BOTTOM, pady=5)
 
-update_button3 = ttk.Button(root, text="Show Soil Moisture", command=lambda: [msg_text.insert(tk.END, "Plant has sufficient water as of now\n")])
+update_button3 = ttk.Button(root, text="Show Soil Moisture", command=lambda: [msg_text.insert(tk.END, f"{water_text()}\n")])
 update_button3.pack(side=tk.BOTTOM, pady=5)
 
 Data_label = ttk.Label(root, text="Data", font=("Arial", 20))
@@ -201,20 +206,23 @@ update_graph()
 # Start the main loop
 # root.mainloop()
 def waterpoll(wschannel):
-        if GPIO.input(wschannel):
-                print("Your plants have plenty of fresh water!")
-                return True
-        else:
-                print("Your plants are dry!")
-                return False
+    if GPIO.input(wschannel):
+        return True
+    else:
+        return False
 
+def water_text():
+    if GPIO.input(wschannel):
+        return "Your plants have plenty of fresh water!"
+    else:
+        return "Your plants are dry!"
 # DA PUMP CODE
 
 
 def water_plant(relay, seconds):
     relay.on()
     print("Plant is being watered!")
-    time.sleep(seconds)
+    sleep(seconds)
     print("Watering is finished!")
     relay.off()
 
@@ -261,7 +269,7 @@ try:
             tim = int(time.strftime("%M"))
             if temp_y[0] == 0:
                 while True:
-                    sleep(3)
+                    sleep(2)
                     temperature = dht.temperature
                     temp_y.pop(0)
                     temp_y.append(temperature)
@@ -290,25 +298,21 @@ try:
                         GPIO.output(GREEN_PIN, GPIO.HIGH)
                         GPIO.output(RED_PIN, GPIO.HIGH)
                         GPIO.output(BLUE_PIN, GPIO.HIGH)
-                        sleep(3)
                     elif(temperature>21 and humidity>55):
                         msg_text.insert(tk.END, "Temperature is good, but its\ntoo humid...open the window!\n")
                         GPIO.output(GREEN_PIN, GPIO.HIGH)
                         GPIO.output(RED_PIN, GPIO.HIGH)
                         GPIO.output(BLUE_PIN, GPIO.HIGH)
-                        sleep(3)
                     elif(temperature<21 and humidity<55):
                         msg_text.insert(tk.END, "Humidity levels within range,\nbut temperature low...\nturning up heat!\n")
                         GPIO.output(GREEN_PIN, GPIO.HIGH)
                         GPIO.output(RED_PIN, GPIO.HIGH)
                         GPIO.output(BLUE_PIN, GPIO.HIGH)
-                        sleep(3)
                     else:
                         msg_text.insert(tk.END, "Temerature and humidity levels\nwithin range...\ngrow plants grow!\n")
                         GPIO.output(GREEN_PIN, GPIO.HIGH)
                         GPIO.output(RED_PIN, GPIO.HIGH)
                         GPIO.output(BLUE_PIN, GPIO.HIGH)
-                        sleep(3)
                     main()
             elif ((tim-1)%5==0):
                 timset=1
