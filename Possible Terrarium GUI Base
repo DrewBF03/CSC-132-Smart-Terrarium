@@ -132,6 +132,7 @@ def toggle_lights():
         GPIO.output(BLUE_PIN, GPIO.HIGH)
 
 def toggle_pump():
+    global pump
     if pump:
         pump=0
         RELAY.off()
@@ -207,15 +208,15 @@ update_graph()
 # root.mainloop()
 def waterpoll(wschannel):
     if GPIO.input(wschannel):
-        return True
-    else:
         return False
+    else:
+        return True
 
 def water_text():
     if GPIO.input(wschannel):
-        return "Your plants have plenty of fresh water!"
-    else:
         return "Your plants are dry!"
+    else:
+        return "Your plants have plenty of fresh water!"
 # DA PUMP CODE
 
 
@@ -238,8 +239,8 @@ def main():
 
 ##### THIS IS THE TEMP/HUMIDITY SENSOR AND LIGHTS #####
 
-from classes import Hardware
-from classes import TimeKeeper as TK
+import Hardware
+import TimeKeeper as TK
 import RPi.GPIO as GPIO
 import time
 from time import sleep
