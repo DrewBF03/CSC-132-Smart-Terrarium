@@ -1,7 +1,7 @@
 from classes import Hardware
 from classes import TimeKeeper as TK
 #import schedule
-import Rpi.GPIO as GPIO
+import RPi.GPIO as GPIO
 #import smtplib
 import time
 #import ssl
@@ -40,8 +40,8 @@ def waterpoll(wschannel):
                 print("Water Detected!")
                 return True
  
-#GPIO.add_event_detect(wschannel, GPIO.BOTH, bouncetime=300)  # let us know when the pin goes HIGH or LOW
-#GPIO.add_event_callback(wschannel, callback)  # assign function to GPIO PIN, Run function on change
+#x = GPIO.add_event_detect(wschannel, GPIO.BOTH, bouncetime=1000)  # let us know when the pin goes HIGH or LOW
+#PIO.add_event_callback(wschannel, waterpoll)  # assign function to GPIO PIN, Run function on change
  
 # infinite loop
 
@@ -81,8 +81,9 @@ def water_plant(relay, seconds):
     relay.off()
 
 def main():
+    test = 1
     #time_keeper = TK.TimeKeeper(TK.TimeKeeper.get_current_time())
-    if(waterpoll(wschannel) == True):
+    if(waterpoll(wschannel) == False):
         print("Watering Initiated!")
         water_plant(RELAY, SECONDS_TO_WATER)
         #time_keeper.set_time_last_watered(TK.TimeKeeper.get_current_time())
