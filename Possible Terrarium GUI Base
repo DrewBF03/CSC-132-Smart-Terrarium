@@ -3,6 +3,9 @@ from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 check = 0
+auto=1
+lights=0
+pump=0
 
 x_data = [1, 2, 3, 4, 5]
 humid_y = [0, 0, 0, 0, 0]
@@ -92,6 +95,39 @@ def temp_graph():
     # Update the message board with a new message
     msg_text.insert(tk.END, "Graph updated\n")
 
+def toggle_mode():
+    global auto, lights_button, pump_button, mode_label
+    if auto:
+        auto=0
+        lights_button = ttk.Button(root, text="Toggle Lights", command=lambda: [toggle_lights()])
+        lights_button.pack(side=tk.TOP, pady=5)
+
+        pump_button = ttk.Button(root, text="Start/Stop Pumping", command=lambda: [toggle_pump()])
+        pump_button.pack(side=tk.TOP, pady=5)
+        mode_label.config(text="Current Mode: Manual")
+
+    else:
+        auto=1
+        lights_button.destroy()
+        pump_button.destroy()
+        mode_label.config(text="Current Mode: Auto")
+
+def toggle_lights():
+    global lights
+    if lights:
+        lights=0
+        GPIO.output(GREEN_PIN, GPIO.LOW)
+        GPIO.output(RED_PIN, GPIO.LOW)
+        GPIO.output(BLUE_PIN, GPIO.LOW)
+    else:
+        lights=1
+        GPIO.output(GREEN_PIN, GPIO.HIGH)
+        GPIO.output(RED_PIN, GPIO.HIGH)
+        GPIO.output(BLUE_PIN, GPIO.HIGH)
+
+def toggle_pump():
+    pass
+
 # Create a button to update the data and redraw the graph
 update_button1 = ttk.Button(root, text="Show Temperature", command=lambda: [temp_graph()])
 update_button1.pack(side=tk.BOTTOM, pady=5)
@@ -101,6 +137,18 @@ update_button2.pack(side=tk.BOTTOM, pady=5)
 
 update_button3 = ttk.Button(root, text="Show Soil Moisture", command=lambda: [msg_text.insert(tk.END, "Plant has sufficient water as of now\n")])
 update_button3.pack(side=tk.BOTTOM, pady=5)
+
+Data_label = ttk.Label(root, text="Data", font=("Arial", 20))
+Data_label.pack(side=tk.BOTTOM, pady=5)
+
+Control_label = ttk.Label(root, text="Controls", font=("Arial", 20))
+Control_label.pack(side=tk.TOP, pady=5)
+
+mode_button = ttk.Button(root, text="Toggle Mode", command=lambda: [toggle_mode()])
+mode_button.pack(side=tk.TOP, pady=5)
+
+mode_label = ttk.Label(root, text="Current Mode: Auto")
+mode_label.pack(side=tk.TOP, pady=5)
 
 # update_button4 = ttk.Button(root, text="Show Light Levels", command=lambda: [set_graph(light_y,set_light)])
 # update_button4.pack(side=tk.BOTTOM, pady=5)
@@ -177,30 +225,31 @@ try:
             root.update()
             #Print what we got to the REPL
             print("Temp: {:.1f} *C \t Humidity: {}%".format(temperature, humidity))
-            if(temperature<21 and humidity>55):
-                print("it is too cold and too humid...turning up heat... open the window!")
-                GPIO.output(GREEN_PIN, GPIO.HIGH)
-                GPIO.output(RED_PIN, GPIO.HIGH)
-                GPIO.output(BLUE_PIN, GPIO.HIGH)
-                sleep(3)
-            elif(temperature>21 and humidity>55):
-                print("temperature is good, but its too humid...open the window!")
-                GPIO.output(GREEN_PIN, GPIO.HIGH)
-                GPIO.output(RED_PIN, GPIO.HIGH)
-                GPIO.output(BLUE_PIN, GPIO.HIGH)
-                sleep(3)
-            elif(temperature<21 and humidity<55):
-                print("humidity levels within range, but temperature low...turning up heat!")
-                GPIO.output(GREEN_PIN, GPIO.HIGH)
-                GPIO.output(RED_PIN, GPIO.HIGH)
-                GPIO.output(BLUE_PIN, GPIO.HIGH)
-                sleep(3)
-            else:
-                print("temerature and humidity levels within range...grow plants grow!")
-                GPIO.output(GREEN_PIN, GPIO.HIGH)
-                GPIO.output(RED_PIN, GPIO.HIGH)
-                GPIO.output(BLUE_PIN, GPIO.HIGH)
-                sleep(3)
+            if auto:
+                if(temperature<21 and humidity>55):
+                    print("it is too cold and too humid...turning up heat... open the window!")
+                    GPIO.output(GREEN_PIN, GPIO.HIGH)
+                    GPIO.output(RED_PIN, GPIO.HIGH)
+                    GPIO.output(BLUE_PIN, GPIO.HIGH)
+                    sleep(3)
+                elif(temperature>21 and humidity>55):
+                    print("temperature is good, but its too humid...open the window!")
+                    GPIO.output(GREEN_PIN, GPIO.HIGH)
+                    GPIO.output(RED_PIN, GPIO.HIGH)
+                    GPIO.output(BLUE_PIN, GPIO.HIGH)
+                    sleep(3)
+                elif(temperature<21 and humidity<55):
+                    print("humidity levels within range, but temperature low...turning up heat!")
+                    GPIO.output(GREEN_PIN, GPIO.HIGH)
+                    GPIO.output(RED_PIN, GPIO.HIGH)
+                    GPIO.output(BLUE_PIN, GPIO.HIGH)
+                    sleep(3)
+                else:
+                    print("temerature and humidity levels within range...grow plants grow!")
+                    GPIO.output(GREEN_PIN, GPIO.HIGH)
+                    GPIO.output(RED_PIN, GPIO.HIGH)
+                    GPIO.output(BLUE_PIN, GPIO.HIGH)
+                    sleep(3)
         except RuntimeError as e:
         #Reading doesn't always work! Just print error and we'll try again
             print("Reading from DHT failure: ", e.args)
@@ -209,4 +258,7 @@ try:
 
 except KeyboardInterrupt:
     print("all done")
+    GPIO.output(GREEN_PIN, GPIO.LOW)
+    GPIO.output(RED_PIN, GPIO.LOW)
+    GPIO.output(BLUE_PIN, GPIO.LOW)
     GPIO.cleanup()
