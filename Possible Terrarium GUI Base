@@ -252,6 +252,11 @@ wschannel = 13
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(wschannel, GPIO.IN)
 
+# RESERVOIR SENSOR SETUP
+wsreschannel = 17
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(wsreschannel, GPIO.IN)
+
 #PUMP SETUP
 SECONDS_TO_WATER = 10
 RELAY = Hardware.Relay(12, False)
