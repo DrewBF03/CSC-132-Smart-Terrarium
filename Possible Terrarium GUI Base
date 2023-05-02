@@ -147,8 +147,11 @@ update_button1.pack(side=tk.BOTTOM, pady=5)
 update_button2 = ttk.Button(root, text="Show Humidity", command=lambda: [humid_graph()])
 update_button2.pack(side=tk.BOTTOM, pady=5)
 
-update_button3 = ttk.Button(root, text="Show Soil Moisture", command=lambda: [msg_text.insert(tk.END, f"{water_text()}\n")])
+update_button3 = ttk.Button(root, text="Show Soil Moisture", command=lambda: [msg_text.insert(tk.END, f"{plant_water()}\n")])
 update_button3.pack(side=tk.BOTTOM, pady=5)
+
+update_button4 = ttk.Button(root, text="Show Water Levels", command=lambda: [msg_text.insert(tk.END, f"{water_resevoir()}\n")])
+update_button4.pack(side=tk.BOTTOM, pady=5)
 
 Data_label = ttk.Label(root, text="Data", font=("Arial", 20))
 Data_label.pack(side=tk.BOTTOM, pady=5)
@@ -206,32 +209,39 @@ update_graph()
 
 # Start the main loop
 # root.mainloop()
-def waterpoll(wschannel):
-    if GPIO.input(wschannel):
+def waterpoll(channel):
+    if GPIO.input(channel):
         return False
     else:
         return True
 
-def water_text():
+def plant_water():
     if GPIO.input(wschannel):
-        return "Your plants are dry!"
+        return "Your plants are dry!\n"
     else:
-        return "Your plants have plenty of fresh water!"
+        return "Your plants have plenty of fresh water!\n"
+    
+def water_resevoir():
+    if GPIO.input(wsreschannel):
+        return "Water resevoir does not need to be filled\n"
+    else:
+        return "Water resevoir needs to be filled\n"
 # DA PUMP CODE
-
 
 def water_plant(relay, seconds):
     relay.on()
-    print("Plant is being watered!")
+    msg_text.insert(tk.END, "Plant is being watered!\n")
     sleep(seconds)
-    print("Watering is finished!")
+    msg_text.insert(tk.END, "Watering is finished!\n")
     relay.off()
 
 def main():
     #time_keeper = TK.TimeKeeper(TK.TimeKeeper.get_current_time())
     if(waterpoll(wschannel) == False):
-        print("Watering Initiated!")
         water_plant(RELAY, SECONDS_TO_WATER)
+    
+    if(waterpoll(wsreschannel) == False):
+        msg_text.insert(tk.END, "Water resevoir needs to be filled\n")
 
 
 ################################################################################
