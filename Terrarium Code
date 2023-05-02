@@ -223,9 +223,9 @@ def plant_water():
     
 def water_resevoir():
     if GPIO.input(wsreschannel):
-        return "Water resevoir does not need to be filled\n"
-    else:
         return "Water resevoir needs to be filled\n"
+    else:
+        return "Water resevoir does not need to be filled\n"
 # DA PUMP CODE
 
 def water_plant(relay, seconds):
