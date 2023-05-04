@@ -7,7 +7,7 @@ This project is called the Raspberry Pi Smart Terrarium. It is an automated plan
 LED lights, a 2-in-1 temperature and humidity sensor, soil moisture sensors, and a water pump to provide care for plants and relay live information
 on plant and terrarium conditions to the user, helping them to interact with the system and their plants in manners that encourage education and growth.
 
-The primary goal of this project was to streamline the process of plant care while helping eve the most novice gardeners provide exceptional care 
+The primary goal of this project was to streamline the process of plant care while helping even the most novice gardeners provide exceptional care 
 for their plants. By providing our users with detailed yet comprehensible information on temperature, humidity, and soil moisture,
 they will be more knowledgeable about the conditions of the plants in their terrarium and better equipped to act and care for their plants.
 
